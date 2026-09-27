@@ -35,7 +35,7 @@ python3 -m http.server 8000
 npx serve .
 ```
 
-Se puede publicar tal cual en GitHub Pages o en Vercel.
+Publicada en **https://generador-prompt.vercel.app**. También se puede publicar tal cual en GitHub Pages.
 
 ### Despliegue en Vercel
 
