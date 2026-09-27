@@ -35,7 +35,14 @@ python3 -m http.server 8000
 npx serve .
 ```
 
-Se puede publicar tal cual en GitHub Pages.
+Se puede publicar tal cual en GitHub Pages o en Vercel.
+
+### Despliegue en Vercel
+
+No requiere build: `vercel.json` sirve los archivos estáticos con cabeceras de seguridad y caché.
+
+- **Desde el panel**: *Add New › Project*, importa este repositorio, deja *Framework Preset* en «Other» y sin comando de build, y pulsa *Deploy*. Cada push a la rama de producción se despliega automáticamente.
+- **Desde la terminal**: `npx vercel` (vista previa) y `npx vercel --prod` (producción).
 
 ## Estructura
 
