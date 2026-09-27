@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Generador de Prompts Web — SEO, GSAP y multiplataforma</title>
+  <meta name="description" content="Genera prompts profesionales para crear sitios web con Google AI Studio, Google Cloud Studio, ChatGPT, Antigravity o Codex, adaptados a SEO, animaciones GSAP y al tipo de proyecto.">
+  <meta name="theme-color" content="#0f1117">
+  <link rel="canonical" href="https://escuelaartegranada.github.io/generadorPrompt/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Generador de Prompts Web multiplataforma">
+  <meta property="og:description" content="Prompts listos para Google AI Studio, Google Cloud Studio, ChatGPT, Antigravity y Codex con SEO y animaciones GSAP.">
+  <meta property="og:locale" content="es_ES">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✦</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Generador de Prompts Web",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "inLanguage": "es",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" }
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#generator">Saltar al generador</a>
+
+  <header class="hero">
+    <div class="hero__inner">
+      <p class="eyebrow" data-anim="hero">Ingeniería de prompts · Diseño · Desarrollo web</p>
+      <h1 data-anim="hero">Generador de prompts <span class="accent">multiplataforma</span></h1>
+      <p class="lead" data-anim="hero">Elige la plataforma, el tipo de proyecto, el nivel de SEO y las animaciones GSAP. Obtén un prompt estructurado y optimizado para cada herramienta.</p>
+    </div>
+  </header>
+
+  <main id="generator" class="layout">
+    <form id="promptForm" class="panel form" novalidate>
+
+      <!-- 1. Plataforma -->
+      <fieldset class="step" data-anim="step">
+        <legend><span class="step__num">1</span> Plataforma de destino</legend>
+        <div class="platforms" id="platformList" role="radiogroup" aria-label="Plataforma"></div>
+        <p class="hint" id="platformHint"></p>
+      </fieldset>
+
+      <!-- 2. Proyecto -->
+      <fieldset class="step" data-anim="step">
+        <legend><span class="step__num">2</span> Proyecto</legend>
+        <div class="grid-2">
+          <label class="field">
+            <span>Tipo de proyecto</span>
+            <select id="projectType" name="projectType"></select>
+          </label>
+          <label class="field">
+            <span>Stack tecnológico</span>
+            <select id="stack" name="stack"></select>
+          </label>
+          <label class="field">
+            <span>Nombre del proyecto / marca</span>
+            <input id="projectName" name="projectName" type="text" placeholder="Ej.: Escuela de Arte Granada">
+          </label>
+          <label class="field">
+            <span>Idioma del sitio</span>
+            <select id="siteLang" name="siteLang">
+              <option value="es">Español</option>
+              <option value="en">Inglés</option>
+              <option value="es,en">Español + Inglés</option>
+              <option value="fr">Francés</option>
+              <option value="de">Alemán</option>
+              <option value="it">Italiano</option>
+              <option value="pt">Portugués</option>
+            </select>
+          </label>
+        </div>
+        <label class="field">
+          <span>Descripción y objetivo</span>
+          <textarea id="description" name="description" rows="3" placeholder="¿Qué es el proyecto y qué debe conseguir? Ej.: web para una escuela de arte que capte matrículas para cursos de pintura y cerámica."></textarea>
+        </label>
+        <div class="grid-2">
+          <label class="field">
+            <span>Público objetivo</span>
+            <input id="audience" name="audience" type="text" placeholder="Ej.: adultos 25-55 interesados en formación artística">
+          </label>
+          <label class="field">
+            <span>Llamada a la acción principal</span>
+            <input id="cta" name="cta" type="text" placeholder="Ej.: Reservar clase de prueba">
+          </label>
+        </div>
+        <label class="field">
+          <span>Secciones / páginas <small>(separadas por comas; se sugieren según el tipo)</small></span>
+          <input id="sections" name="sections" type="text">
+        </label>
+      </fieldset>
+
+      <!-- 3. Diseño -->
+      <fieldset class="step" data-anim="step">
+        <legend><span class="step__num">3</span> Diseño visual</legend>
+        <div class="grid-2">
+          <label class="field">
+            <span>Estilo</span>
+            <select id="style" name="style">
+              <option value="minimalista editorial">Minimalista editorial</option>
+              <option value="moderno con gradientes y glassmorphism">Moderno / glassmorphism</option>
+              <option value="brutalista con tipografía grande">Brutalista</option>
+              <option value="elegante y premium (lujo)">Elegante / premium</option>
+              <option value="artístico y experimental">Artístico / experimental</option>
+              <option value="corporativo sobrio">Corporativo sobrio</option>
+              <option value="lúdico y colorido">Lúdico / colorido</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Paleta / colores de marca</span>
+            <input id="palette" name="palette" type="text" placeholder="Ej.: terracota #C65D3B, crema #F4EDE4, negro #1A1A1A">
+          </label>
+          <label class="field">
+            <span>Tipografía</span>
+            <input id="fonts" name="fonts" type="text" placeholder="Ej.: Fraunces (títulos) + Inter (texto)">
+          </label>
+          <label class="field">
+            <span>Referencias (URLs o descripción)</span>
+            <input id="references" name="references" type="text" placeholder="Ej.: estilo similar a awwwards.com">
+          </label>
+        </div>
+        <div class="checks">
+          <label class="check"><input type="checkbox" id="darkMode" checked> Modo claro/oscuro</label>
+          <label class="check"><input type="checkbox" id="mobileFirst" checked> Mobile‑first</label>
+          <label class="check"><input type="checkbox" id="a11y" checked> Accesibilidad WCAG 2.2 AA</label>
+        </div>
+      </fieldset>
+
+      <!-- 4. SEO -->
+      <fieldset class="step" data-anim="step">
+        <legend><span class="step__num">4</span> SEO</legend>
+        <div class="segmented" role="radiogroup" aria-label="Nivel de SEO" id="seoLevel">
+          <label><input type="radio" name="seoLevel" value="none"> Ninguno</label>
+          <label><input type="radio" name="seoLevel" value="basic"> Básico</label>
+          <label><input type="radio" name="seoLevel" value="advanced" checked> Avanzado</label>
+          <label><input type="radio" name="seoLevel" value="technical"> Técnico total</label>
+        </div>
+        <div class="seo-options" id="seoOptions">
+          <div class="grid-2">
+            <label class="field">
+              <span>Palabra clave principal</span>
+              <input id="keyword" name="keyword" type="text" placeholder="Ej.: escuela de arte en Granada">
+            </label>
+            <label class="field">
+              <span>Palabras clave secundarias</span>
+              <input id="keywords2" name="keywords2" type="text" placeholder="Ej.: clases de pintura, cursos de cerámica">
+            </label>
+            <label class="field">
+              <span>Ubicación (SEO local)</span>
+              <input id="location" name="location" type="text" placeholder="Ej.: Granada, España">
+            </label>
+            <label class="field">
+              <span>Dominio</span>
+              <input id="domain" name="domain" type="text" placeholder="Ej.: https://www.midominio.com">
+            </label>
+          </div>
+          <div class="checks">
+            <label class="check"><input type="checkbox" id="seoSchema" checked> Datos estructurados JSON‑LD</label>
+            <label class="check"><input type="checkbox" id="seoSocial" checked> Open Graph / Twitter Cards</label>
+            <label class="check"><input type="checkbox" id="seoSitemap" checked> sitemap.xml + robots.txt</label>
+            <label class="check"><input type="checkbox" id="seoCwv" checked> Core Web Vitals</label>
+            <label class="check"><input type="checkbox" id="seoLocal"> SEO local</label>
+            <label class="check"><input type="checkbox" id="seoI18n"> hreflang multilingüe</label>
+            <label class="check"><input type="checkbox" id="seoContent"> Redactar textos SEO</label>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- 5. GSAP -->
+      <fieldset class="step" data-anim="step">
+        <legend><span class="step__num">5</span> Animaciones GSAP</legend>
+        <div class="segmented" role="radiogroup" aria-label="Intensidad de animación" id="gsapLevel">
+          <label><input type="radio" name="gsapLevel" value="none"> Sin animación</label>
+          <label><input type="radio" name="gsapLevel" value="subtle"> Sutil</label>
+          <label><input type="radio" name="gsapLevel" value="moderate" checked> Moderada</label>
+          <label><input type="radio" name="gsapLevel" value="immersive"> Inmersiva</label>
+        </div>
+        <div id="gsapOptions">
+          <p class="hint">Plugins y efectos a incluir:</p>
+          <div class="checks" id="gsapPlugins"></div>
+          <label class="field">
+            <span>Animaciones concretas que quieres <small>(opcional)</small></span>
+            <textarea id="gsapCustom" rows="2" placeholder="Ej.: el hero revela el título letra a letra; la galería se desplaza en horizontal al hacer scroll."></textarea>
+          </label>
+        </div>
+      </fieldset>
+
+      <!-- 6. Salida -->
+      <fieldset class="step" data-anim="step">
+        <legend><span class="step__num">6</span> Formato de respuesta</legend>
+        <div class="grid-2">
+          <label class="field">
+            <span>Nivel de detalle</span>
+            <select id="detail" name="detail">
+              <option value="concise">Conciso</option>
+              <option value="complete" selected>Completo</option>
+              <option value="exhaustive">Exhaustivo (máximo detalle)</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Alcance de la entrega</span>
+            <select id="scope" name="scope">
+              <option value="mvp">MVP funcional</option>
+              <option value="production" selected>Listo para producción</option>
+              <option value="prototype">Prototipo visual rápido</option>
+            </select>
+          </label>
+        </div>
+        <div class="checks">
+          <label class="check"><input type="checkbox" id="askQuestions"> Pedir que haga preguntas antes de empezar</label>
+          <label class="check"><input type="checkbox" id="rulesFile" checked> Incluir archivo de reglas del agente (AGENTS.md / reglas)</label>
+        </div>
+      </fieldset>
+    </form>
+
+    <aside class="panel output" aria-live="polite">
+      <div class="output__head">
+        <div>
+          <h2>Tu prompt</h2>
+          <p class="meta" id="meta"></p>
+        </div>
+        <div class="score" id="score" title="Completitud del briefing">
+          <svg viewBox="0 0 36 36" aria-hidden="true"><circle class="score__bg" cx="18" cy="18" r="15.9"/><circle class="score__fg" id="scoreRing" cx="18" cy="18" r="15.9"/></svg>
+          <span id="scoreValue">0%</span>
+        </div>
+      </div>
+
+      <div class="tabs" role="tablist" id="tabs"></div>
+      <div id="outputBlocks"></div>
+
+      <div class="actions">
+        <button type="button" class="btn btn--primary" id="copyAll">Copiar todo</button>
+        <button type="button" class="btn" id="download">Descargar .md</button>
+        <button type="button" class="btn" id="share">Copiar enlace</button>
+        <button type="button" class="btn btn--ghost" id="reset">Restablecer</button>
+      </div>
+      <p class="tips" id="tips"></p>
+    </aside>
+  </main>
+
+  <footer class="footer">
+    <p>Hecho para diseñadores y desarrolladores · Los datos se guardan solo en tu navegador.</p>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
+  <script src="data.js" defer></script>
+  <script src="app.js" defer></script>
+</body>
+</html>
