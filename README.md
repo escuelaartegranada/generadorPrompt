@@ -2,7 +2,7 @@
 
 Aplicación web (HTML + CSS + JavaScript, sin build) que genera prompts profesionales en dos modos:
 
-- **Desarrollo web**: Google AI Studio, Google Cloud Studio (Vertex AI / Firebase Studio), ChatGPT, Antigravity y Codex.
+- **Desarrollo web**: Google AI Studio, Claude, ChatGPT, Google Stitch, Antigravity y Codex.
 - **Diseño UI**: Google Stitch, Claude Design, Figma Make y v0.
 
 Ambos se adaptan a:
@@ -17,10 +17,11 @@ Ambos se adaptan a:
 | Plataforma | Formato | Salida |
 |---|---|---|
 | Google AI Studio | Secciones con etiquetas XML | Instrucciones del sistema + prompt |
-| Google Cloud Studio | Etiquetas XML + despliegue en Cloud Run / Firebase Hosting | Instrucciones del sistema + prompt |
+| Claude | Etiquetas XML, artefactos y entrega archivo por archivo | Instrucciones del proyecto + prompt |
 | ChatGPT | Markdown, trabajo por fases | Prompt único |
 | Antigravity | Markdown con flujo plan → implementación → verificación en navegador | Prompt de tarea + reglas del workspace |
 | Codex | Markdown con flujo de agente, commits y verificación | Prompt de tarea + `AGENTS.md` |
+| Google Stitch (desarrollo) | Diseño por pantallas y exportación de código | Prompt inicial + pantallas + prompt «Tras exportar el código» (SEO + GSAP) |
 | Google Stitch | Prompt inicial compacto + un prompt por pantalla y prompts de ajuste | Prompt inicial + pantallas + especificación de movimiento |
 | Claude Design | Brief completo: sistema de diseño primero, variantes y entrega a desarrollo | Prompt de diseño |
 | Figma Make | Brief orientado a prototipo con Auto Layout, variables y componentes | Prompt de diseño |

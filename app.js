@@ -459,9 +459,22 @@
     const { P } = x;
     const blocks = [];
 
+    // Google Stitch: diseño de pantallas + prompt para llevar el código exportado a producción.
+    if (P.stitch) {
+      const design = buildDesign({ ...s, platform: 'stitch' });
+      const intro = section('tarea', 'Tarea', [], s,
+        `Adjunto el código HTML/CSS exportado de Google Stitch para «${s.projectName || 'el proyecto'}». Conviértelo en un sitio listo para producción con ${x.S.name}, manteniendo el diseño y añadiendo lo siguiente.`);
+      blocks.push(...design.blocks.filter((b) => b.label !== 'Especificación de movimiento'));
+      blocks.push({
+        label: 'Tras exportar el código',
+        content: x.role.intro + '\n\n' + format([intro, x.standards, x.seo, x.gsapBrief, x.gsapRules, x.acceptance, x.deliverables], 'md'),
+      });
+      return { blocks, platform: P };
+    }
+
     if (P.split) {
       blocks.push({
-        label: 'Instrucciones del sistema',
+        label: P.systemLabel || 'Instrucciones del sistema',
         content: format([x.role, x.standards, x.gsapRules, x.deliverables], P.format),
       });
       blocks.push({
