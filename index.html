@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Generador de Prompts Web — SEO, GSAP y multiplataforma</title>
-  <meta name="description" content="Genera prompts profesionales para crear sitios web con Google AI Studio, Google Cloud Studio, ChatGPT, Antigravity o Codex, adaptados a SEO, animaciones GSAP y al tipo de proyecto.">
+  <meta name="description" content="Genera prompts profesionales para desarrollar webs con Google AI Studio, Google Cloud Studio, ChatGPT, Antigravity o Codex, y para diseñar interfaces con Google Stitch, Claude Design, Figma Make o v0, adaptados a SEO y animaciones GSAP.">
   <meta name="theme-color" content="#0f1117">
   <link rel="canonical" href="https://generador-prompt.vercel.app/">
   <meta property="og:type" content="website">
@@ -37,31 +37,46 @@
     <div class="hero__inner">
       <p class="eyebrow" data-anim="hero">Ingeniería de prompts · Diseño · Desarrollo web</p>
       <h1 data-anim="hero">Generador de prompts <span class="accent">multiplataforma</span></h1>
-      <p class="lead" data-anim="hero">Elige la plataforma, el tipo de proyecto, el nivel de SEO y las animaciones GSAP. Obtén un prompt estructurado y optimizado para cada herramienta.</p>
+      <p class="lead" data-anim="hero">Prompts para <strong>desarrollar</strong> webs (Google AI Studio, Google Cloud Studio, ChatGPT, Antigravity, Codex) o para <strong>diseñar</strong> interfaces (Google Stitch, Claude Design, Figma Make, v0), adaptados al tipo de proyecto, al SEO y a las animaciones GSAP.</p>
     </div>
   </header>
 
   <main id="generator" class="layout">
     <form id="promptForm" class="panel form" novalidate>
+      <div class="mode" data-anim="step">
+        <div class="segmented segmented--mode" role="radiogroup" aria-label="Tipo de prompt">
+          <label><input type="radio" name="mode" value="web" checked> ⌨ Desarrollo web</label>
+          <label><input type="radio" name="mode" value="design"> ✎ Diseño UI</label>
+        </div>
+      </div>
 
       <!-- 1. Plataforma -->
       <fieldset class="step" data-anim="step">
-        <legend><span class="step__num">1</span> Plataforma de destino</legend>
+        <legend><span class="step__num" aria-hidden="true"></span> Plataforma de destino</legend>
         <div class="platforms" id="platformList" role="radiogroup" aria-label="Plataforma"></div>
         <p class="hint" id="platformHint"></p>
       </fieldset>
 
       <!-- 2. Proyecto -->
       <fieldset class="step" data-anim="step">
-        <legend><span class="step__num">2</span> Proyecto</legend>
+        <legend><span class="step__num" aria-hidden="true"></span> Proyecto</legend>
         <div class="grid-2">
           <label class="field">
             <span>Tipo de proyecto</span>
             <select id="projectType" name="projectType"></select>
           </label>
-          <label class="field">
+          <label class="field" data-mode="web">
             <span>Stack tecnológico</span>
             <select id="stack" name="stack"></select>
+          </label>
+          <label class="field" data-mode="design">
+            <span>Dispositivo / formato</span>
+            <select id="device" name="device">
+              <option value="web-responsive">Web responsive (escritorio + móvil)</option>
+              <option value="web-desktop">Web escritorio</option>
+              <option value="mobile-app">App móvil (iOS / Android)</option>
+              <option value="tablet">Tablet</option>
+            </select>
           </label>
           <label class="field">
             <span>Nombre del proyecto / marca</span>
@@ -95,14 +110,14 @@
           </label>
         </div>
         <label class="field">
-          <span>Secciones / páginas <small>(separadas por comas; se sugieren según el tipo)</small></span>
+          <span><span id="sectionsLabel">Secciones / páginas</span> <small>(separadas por comas; se sugieren según el tipo)</small></span>
           <input id="sections" name="sections" type="text">
         </label>
       </fieldset>
 
       <!-- 3. Diseño -->
       <fieldset class="step" data-anim="step">
-        <legend><span class="step__num">3</span> Diseño visual</legend>
+        <legend><span class="step__num" aria-hidden="true"></span> Diseño visual</legend>
         <div class="grid-2">
           <label class="field">
             <span>Estilo</span>
@@ -136,9 +151,57 @@
         </div>
       </fieldset>
 
+      <!-- Entregable de diseño (solo modo diseño) -->
+      <fieldset class="step" data-anim="step" data-mode="design">
+        <legend><span class="step__num" aria-hidden="true"></span> Entregable de diseño</legend>
+        <div class="grid-2">
+          <label class="field">
+            <span>Fidelidad</span>
+            <select id="fidelity" name="fidelity">
+              <option value="wireframe">Wireframe (baja fidelidad)</option>
+              <option value="hifi" selected>Alta fidelidad (mockup final)</option>
+              <option value="prototype">Prototipo interactivo</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Base del sistema de diseño</span>
+            <select id="dsBase" name="dsBase">
+              <option value="custom">Sistema propio de la marca</option>
+              <option value="material">Material Design 3</option>
+              <option value="hig">Apple Human Interface Guidelines</option>
+              <option value="shadcn">shadcn/ui + Tailwind</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Variantes a explorar</span>
+            <select id="variants" name="variants">
+              <option value="1">1 propuesta</option>
+              <option value="2" selected>2 propuestas</option>
+              <option value="3">3 propuestas</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Contenido</span>
+            <select id="copyMode" name="copyMode">
+              <option value="real" selected>Textos reales del proyecto</option>
+              <option value="placeholder">Textos provisionales realistas</option>
+            </select>
+          </label>
+        </div>
+        <p class="hint">Estados y piezas a incluir:</p>
+        <div class="checks">
+          <label class="check"><input type="checkbox" name="uiState" value="interaction" checked> Hover / foco / pulsado</label>
+          <label class="check"><input type="checkbox" name="uiState" value="empty"> Estados vacíos</label>
+          <label class="check"><input type="checkbox" name="uiState" value="loading"> Carga / skeleton</label>
+          <label class="check"><input type="checkbox" name="uiState" value="error"> Errores y validación</label>
+          <label class="check"><input type="checkbox" id="styleGuide" checked> Hoja de estilos / componentes</label>
+          <label class="check"><input type="checkbox" id="handoff" checked> Anotaciones para desarrollo</label>
+        </div>
+      </fieldset>
+
       <!-- 4. SEO -->
       <fieldset class="step" data-anim="step">
-        <legend><span class="step__num">4</span> SEO</legend>
+        <legend><span class="step__num" aria-hidden="true"></span> SEO <small data-mode="design">· contenido y jerarquía</small></legend>
         <div class="segmented" role="radiogroup" aria-label="Nivel de SEO" id="seoLevel">
           <label><input type="radio" name="seoLevel" value="none"> Ninguno</label>
           <label><input type="radio" name="seoLevel" value="basic"> Básico</label>
@@ -159,12 +222,12 @@
               <span>Ubicación (SEO local)</span>
               <input id="location" name="location" type="text" placeholder="Ej.: Granada, España">
             </label>
-            <label class="field">
+            <label class="field" data-mode="web">
               <span>Dominio</span>
               <input id="domain" name="domain" type="text" placeholder="Ej.: https://www.midominio.com">
             </label>
           </div>
-          <div class="checks">
+          <div class="checks" data-mode="web">
             <label class="check"><input type="checkbox" id="seoSchema" checked> Datos estructurados JSON‑LD</label>
             <label class="check"><input type="checkbox" id="seoSocial" checked> Open Graph / Twitter Cards</label>
             <label class="check"><input type="checkbox" id="seoSitemap" checked> sitemap.xml + robots.txt</label>
@@ -178,7 +241,7 @@
 
       <!-- 5. GSAP -->
       <fieldset class="step" data-anim="step">
-        <legend><span class="step__num">5</span> Animaciones GSAP</legend>
+        <legend><span class="step__num" aria-hidden="true"></span> Animaciones GSAP <small data-mode="design">· especificación de movimiento</small></legend>
         <div class="segmented" role="radiogroup" aria-label="Intensidad de animación" id="gsapLevel">
           <label><input type="radio" name="gsapLevel" value="none"> Sin animación</label>
           <label><input type="radio" name="gsapLevel" value="subtle"> Sutil</label>
@@ -197,7 +260,7 @@
 
       <!-- 6. Salida -->
       <fieldset class="step" data-anim="step">
-        <legend><span class="step__num">6</span> Formato de respuesta</legend>
+        <legend><span class="step__num" aria-hidden="true"></span> Formato de respuesta</legend>
         <div class="grid-2">
           <label class="field">
             <span>Nivel de detalle</span>
@@ -207,7 +270,7 @@
               <option value="exhaustive">Exhaustivo (máximo detalle)</option>
             </select>
           </label>
-          <label class="field">
+          <label class="field" data-mode="web">
             <span>Alcance de la entrega</span>
             <select id="scope" name="scope">
               <option value="mvp">MVP funcional</option>
@@ -218,7 +281,7 @@
         </div>
         <div class="checks">
           <label class="check"><input type="checkbox" id="askQuestions"> Pedir que haga preguntas antes de empezar</label>
-          <label class="check"><input type="checkbox" id="rulesFile" checked> Incluir archivo de reglas del agente (AGENTS.md / reglas)</label>
+          <label class="check" data-mode="web"><input type="checkbox" id="rulesFile" checked> Incluir archivo de reglas del agente (AGENTS.md / reglas)</label>
         </div>
       </fieldset>
     </form>

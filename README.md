@@ -1,8 +1,12 @@
 # Generador de prompts web multiplataforma
 
-Aplicación web (HTML + CSS + JavaScript, sin build) que genera prompts profesionales para crear sitios web con IA, adaptados a:
+Aplicación web (HTML + CSS + JavaScript, sin build) que genera prompts profesionales en dos modos:
 
-- **Plataforma**: Google AI Studio, Google Cloud Studio (Vertex AI / Firebase Studio), ChatGPT, Antigravity y Codex.
+- **Desarrollo web**: Google AI Studio, Google Cloud Studio (Vertex AI / Firebase Studio), ChatGPT, Antigravity y Codex.
+- **Diseño UI**: Google Stitch, Claude Design, Figma Make y v0.
+
+Ambos se adaptan a:
+
 - **Tipo de proyecto**: landing, corporativa, portfolio, e-commerce, blog, SaaS, escuela/academia, restaurante, evento y negocio local.
 - **SEO**: de básico a técnico completo (palabras clave, JSON-LD específico por tipo de proyecto, Open Graph, sitemap, Core Web Vitals, SEO local, hreflang, búsqueda con IA).
 - **Animaciones GSAP**: intensidad (sutil → inmersiva), plugins (ScrollTrigger, SplitText, Flip, ScrollSmoother…) y reglas técnicas (reduced motion, mejora progresiva, sin penalizar LCP/CLS).
@@ -17,6 +21,12 @@ Aplicación web (HTML + CSS + JavaScript, sin build) que genera prompts profesio
 | ChatGPT | Markdown, trabajo por fases | Prompt único |
 | Antigravity | Markdown con flujo plan → implementación → verificación en navegador | Prompt de tarea + reglas del workspace |
 | Codex | Markdown con flujo de agente, commits y verificación | Prompt de tarea + `AGENTS.md` |
+| Google Stitch | Prompt inicial compacto + un prompt por pantalla y prompts de ajuste | Prompt inicial + pantallas + especificación de movimiento |
+| Claude Design | Brief completo: sistema de diseño primero, variantes y entrega a desarrollo | Prompt de diseño |
+| Figma Make | Brief orientado a prototipo con Auto Layout, variables y componentes | Prompt de diseño |
+| v0 | Brief de UI en React + Tailwind + shadcn/ui | Prompt de diseño |
+
+En el modo **Diseño UI** se configuran además el dispositivo, la fidelidad (wireframe, alta fidelidad o prototipo), la base del sistema de diseño, las variantes y los estados. El SEO se traduce en jerarquía de contenido y las animaciones en una especificación de movimiento lista para implementarse con GSAP.
 
 ## Funciones
 

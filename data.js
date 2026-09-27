@@ -99,6 +99,97 @@ window.PG_DATA = {
     },
   ],
 
+  // Plataformas de diseño de interfaces (modo «Diseño UI»).
+  designPlatforms: [
+    {
+      id: 'stitch',
+      name: 'Google Stitch',
+      badge: 'Google Labs · Gemini',
+      icon: '✂',
+      mode: 'stitch',
+      hint: 'Stitch rinde mejor con un prompt inicial claro y luego un cambio o pantalla por mensaje. Se generan un prompt inicial y los prompts de cada pantalla para pegarlos uno a uno.',
+      role: 'Actúa como diseñador/a UI/UX sénior.',
+      delivery: [
+        'Mantén el mismo tema, tipografía, radios y componentes en todas las pantallas.',
+        'Usa textos reales, no lorem ipsum.',
+      ],
+      tips: 'Pega primero el prompt inicial y después cada prompt de pantalla por separado. Para ajustes, pide un solo cambio por mensaje (p. ej. «haz el botón principal más grande»). Puedes adjuntar un boceto o captura como referencia y exportar el resultado a Figma o a HTML/CSS.',
+    },
+    {
+      id: 'claudedesign',
+      name: 'Claude Design',
+      badge: 'Anthropic',
+      icon: '◈',
+      mode: 'brief',
+      hint: 'Brief completo en Markdown para Claude Design: diseños y prototipos a partir de la conversación, con sistema de diseño reutilizable y entrega a desarrollo.',
+      role: 'Actúa como director/a de arte y diseñador/a de producto sénior, con dominio de sistemas de diseño, accesibilidad y diseño para SEO.',
+      delivery: [
+        'Empieza por el sistema de diseño (tokens y componentes base) y después compón las pantallas con él.',
+        'Presenta las variantes una junto a otra con una breve justificación de cada una.',
+        'Cuando te pida cambios, aplícalos de forma coherente en todas las pantallas afectadas.',
+        'Prepara el diseño para la entrega a desarrollo (por ejemplo, a Claude Code): nombres claros de componentes y tokens.',
+      ],
+      tips: 'Si tu equipo ya tiene un sistema de diseño, adjúntalo o enlázalo al empezar para que Claude lo aplique. Itera con comentarios concretos sobre cada pantalla y, al terminar, pasa el diseño a Claude Code para implementarlo.',
+    },
+    {
+      id: 'figmamake',
+      name: 'Figma Make',
+      badge: 'Figma',
+      icon: '◐',
+      mode: 'brief',
+      hint: 'Prompt para Figma Make: genera prototipos funcionales dentro de Figma. Adjunta frames o tu librería de componentes para que respete tu estilo.',
+      role: 'Actúa como diseñador/a de producto sénior y prototipador/a en Figma.',
+      delivery: [
+        'Genera un prototipo navegable entre las pantallas indicadas.',
+        'Usa Auto Layout, variables de color y tipografía, y componentes con variantes para los estados.',
+        'Nombra capas y componentes de forma clara y en el idioma del proyecto.',
+      ],
+      tips: 'Adjunta un frame de referencia o selecciona tu librería antes de enviar el prompt. Pide los cambios por pantalla o componente para no rehacer todo el prototipo.',
+    },
+    {
+      id: 'v0',
+      name: 'v0',
+      badge: 'Vercel',
+      icon: '▲',
+      mode: 'brief',
+      hint: 'Prompt para v0: genera la interfaz directamente como componentes React con Tailwind CSS y shadcn/ui, lista para publicar en Vercel.',
+      role: 'Actúa como diseñador/a UI y desarrollador/a front-end experto/a en React, Tailwind CSS y shadcn/ui.',
+      delivery: [
+        'Construye la interfaz con componentes de shadcn/ui y Tailwind CSS, con tokens de tema en variables CSS.',
+        'Separa cada pantalla y cada componente reutilizable en su propio archivo.',
+        'Usa imágenes provisionales con proporciones reales y texto alternativo descriptivo.',
+      ],
+      tips: 'Empieza por la pantalla principal y añade las demás en mensajes sucesivos. Cuando el diseño te convenza, publícalo en Vercel o descárgalo e implementa las animaciones GSAP con el modo Desarrollo web.',
+    },
+  ],
+
+  devices: {
+    'web-responsive': 'una web responsive (escritorio 1440 px y móvil 390 px)',
+    'web-desktop': 'una web de escritorio (1440 px)',
+    'mobile-app': 'una app móvil (390 × 844 px, iOS y Android)',
+    tablet: 'una interfaz para tablet (1024 × 768 px)',
+  },
+
+  fidelity: {
+    wireframe: 'wireframes en escala de grises centrados en estructura y jerarquía',
+    hifi: 'mockups de alta fidelidad con el estilo visual final',
+    prototype: 'un prototipo interactivo de alta fidelidad con navegación entre pantallas',
+  },
+
+  dsBases: {
+    custom: 'sistema de diseño propio a partir de la marca',
+    material: 'Material Design 3 adaptado a la marca',
+    hig: 'Apple Human Interface Guidelines adaptadas a la marca',
+    shadcn: 'shadcn/ui + Tailwind CSS con tema personalizado',
+  },
+
+  uiStates: {
+    interaction: 'hover, foco visible y pulsado',
+    empty: 'estados vacíos',
+    loading: 'carga y skeletons',
+    error: 'errores y validación de formularios',
+  },
+
   stacks: [
     {
       id: 'html',

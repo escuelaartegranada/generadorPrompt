@@ -12,9 +12,10 @@
   const LEVEL_RANK = { none: 0, subtle: 1, moderate: 2, immersive: 3 };
 
   const TEXT_FIELDS = ['projectType', 'stack', 'projectName', 'siteLang', 'description', 'audience', 'cta', 'sections',
-    'style', 'palette', 'fonts', 'references', 'keyword', 'keywords2', 'location', 'domain', 'gsapCustom', 'detail', 'scope'];
+    'style', 'palette', 'fonts', 'references', 'keyword', 'keywords2', 'location', 'domain', 'gsapCustom', 'detail', 'scope',
+    'device', 'fidelity', 'dsBase', 'variants', 'copyMode'];
   const CHECK_FIELDS = ['darkMode', 'mobileFirst', 'a11y', 'seoSchema', 'seoSocial', 'seoSitemap', 'seoCwv', 'seoLocal',
-    'seoI18n', 'seoContent', 'askQuestions', 'rulesFile'];
+    'seoI18n', 'seoContent', 'askQuestions', 'rulesFile', 'styleGuide', 'handoff'];
   const LANG_NAMES = { es: 'español', en: 'inglés', 'es,en': 'español e inglés', fr: 'francés', de: 'alemán', it: 'italiano', pt: 'portugués' };
 
   let activeTab = 0;
@@ -22,16 +23,32 @@
 
   /* ---------- Construcción de la interfaz ---------- */
 
-  function renderControls() {
-    $('#platformList').innerHTML = D.platforms.map((p, i) => `
+  const platformsFor = (mode) => (mode === 'design' ? D.designPlatforms : D.platforms);
+  const currentMode = () => ($('input[name="mode"]:checked') || {}).value || 'web';
+
+  // Pinta las tarjetas de plataforma del modo activo; la primera queda como predeterminada.
+  function renderPlatforms(mode, selected) {
+    const list = platformsFor(mode);
+    const sel = list.some((p) => p.id === selected) ? selected : list[0].id;
+    $('#platformList').innerHTML = list.map((p) => `
       <label class="platform">
-        <input type="radio" name="platform" value="${p.id}" ${i === 0 ? 'checked' : ''}>
+        <input type="radio" name="platform" value="${p.id}" ${p.id === sel ? 'checked' : ''}>
         <span class="platform__card">
           <span class="platform__icon" aria-hidden="true">${p.icon}</span>
           <span class="platform__name">${p.name}</span>
           <span class="platform__badge">${p.badge}</span>
         </span>
       </label>`).join('');
+  }
+
+  // Muestra solo los controles del modo activo.
+  function syncMode(mode) {
+    $$('[data-mode]').forEach((el) => { el.hidden = el.dataset.mode !== mode; });
+    $('#sectionsLabel').textContent = mode === 'design' ? 'Pantallas a diseñar' : 'Secciones / páginas';
+  }
+
+  function renderControls() {
+    renderPlatforms('web');
 
     $('#projectType').innerHTML = D.projectTypes.map((t) => `<option value="${t.id}">${t.name}</option>`).join('');
     $('#stack').innerHTML = D.stacks.map((s) => `<option value="${s.id}">${s.name}</option>`).join('');
@@ -45,7 +62,9 @@
 
   function readState() {
     const s = {
+      mode: currentMode(),
       platform: ($('input[name="platform"]:checked') || {}).value,
+      uiStates: $$('input[name="uiState"]:checked').map((c) => c.value),
       seoLevel: ($('input[name="seoLevel"]:checked') || {}).value,
       gsapLevel: ($('input[name="gsapLevel"]:checked') || {}).value,
       gsapPlugins: $$('input[name="gsapPlugin"]:checked').map((c) => c.value),
@@ -61,11 +80,15 @@
       const el = $(`input[name="${name}"][value="${val}"]`);
       if (el) el.checked = true;
     };
-    setRadio('platform', s.platform);
+    setRadio('mode', s.mode || 'web');
+    renderPlatforms(currentMode(), s.platform);
     setRadio('seoLevel', s.seoLevel);
     setRadio('gsapLevel', s.gsapLevel);
     TEXT_FIELDS.forEach((id) => { if (typeof s[id] === 'string') $('#' + id).value = s[id]; });
     CHECK_FIELDS.forEach((id) => { if (typeof s[id] === 'boolean') $('#' + id).checked = s[id]; });
+    if (Array.isArray(s.uiStates)) {
+      $$('input[name="uiState"]').forEach((c) => { c.checked = s.uiStates.includes(c.value); });
+    }
     if (Array.isArray(s.gsapPlugins)) {
       $$('input[name="gsapPlugin"]').forEach((c) => { c.checked = s.gsapPlugins.includes(c.value); });
     }
@@ -298,7 +321,140 @@
     return parts.filter(Boolean).join('\n\n');
   }
 
+  /* ---------- Prompt de diseño (Google Stitch, Claude Design, Figma Make, v0) ---------- */
+
+  function buildDesign(s) {
+    const P = byId(D.designPlatforms, s.platform);
+    const T = byId(D.projectTypes, s.projectType);
+    const name = s.projectName || 'el proyecto';
+    const lang = LANG_NAMES[s.siteLang] || s.siteLang;
+    const device = D.devices[s.device];
+    const seoOn = s.seoLevel !== 'none';
+    const gsapOn = s.gsapLevel !== 'none';
+    const screens = list(s.sections.length ? s.sections : T.sections);
+    const variants = Number(s.variants) || 1;
+    const states = s.uiStates.map((k) => D.uiStates[k]).filter(Boolean);
+    const copy = s.copyMode === 'real'
+      ? `Escribe textos reales en ${lang}, específicos del proyecto (titulares, botones, microcopy).`
+      : `Usa textos provisionales realistas en ${lang} (nada de lorem ipsum).`;
+
+    const visual = [
+      `Estilo: ${s.style}.`,
+      s.palette ? `Paleta: ${s.palette}.` : 'Paleta: propón una paleta coherente con el sector, con contraste AA.',
+      s.fonts ? `Tipografía: ${s.fonts}.` : 'Tipografía: combina dos familias (títulos + texto) con una escala tipográfica clara.',
+      s.references && `Referencias: ${s.references}.`,
+      s.darkMode && 'Incluye versión en modo claro y oscuro.',
+    ];
+
+    // Google Stitch: un prompt inicial compacto + un prompt por pantalla.
+    if (P.mode === 'stitch') {
+      const initial = [
+        `Diseña ${D.fidelity[s.fidelity]} para ${device}: «${name}», ${T.name.toLowerCase()}.`,
+        s.description && s.description,
+        s.audience && `Público: ${s.audience}.`,
+        `Objetivo: ${T.goals}`,
+        '',
+        ...visual.filter(Boolean),
+        `Sistema de diseño: ${D.dsBases[s.dsBase]}; retícula de 8 px, radios y sombras consistentes.`,
+        '',
+        `Empieza por la pantalla «${screens[0]}»${s.cta ? ` con la llamada a la acción «${s.cta}» bien destacada` : ''}.`,
+        seoOn && `Jerarquía de contenido: un único titular principal (H1)${s.keyword ? ` que incluya «${s.keyword}»` : ''}, subtítulos claros y textos escaneables.`,
+        s.a11y && 'Contraste WCAG AA y zonas táctiles de al menos 44 px.',
+        copy,
+        variants > 1 && `Genera ${variants} variantes de esta pantalla con enfoques visuales distintos.`,
+      ].filter((l) => l === '' || Boolean(l));
+      const initialText = initial.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+
+      const perScreen = screens.slice(1).map((scr, i) => [
+        `${i + 2}. Diseña ahora la pantalla «${scr}» de «${name}» con el mismo tema, tipografía y componentes.`,
+        states.length && i === 0 && `   Incluye estados de ${states.join(', ')}.`,
+      ].filter(Boolean).join('\n'));
+
+      const refine = [
+        'Prompts de ajuste (uno por mensaje):',
+        '- Aumenta el contraste del texto secundario hasta cumplir WCAG AA.',
+        '- Unifica el espaciado de todas las pantallas en una retícula de 8 px.',
+        gsapOn && `- Muestra en el diseño el estado inicial y final de la animación del hero (${s.gsapCustom || T.gsap.split(',')[0].toLowerCase()}).`,
+        s.styleGuide && '- Crea una pantalla de guía de estilos con colores, tipografía, botones, campos y tarjetas.',
+      ].filter(Boolean).join('\n');
+
+      const blocks = [{ label: 'Prompt inicial', content: initialText }];
+      if (perScreen.length) blocks.push({ label: 'Pantallas (una a una)', content: perScreen.join('\n\n') + '\n\n' + refine });
+      else blocks.push({ label: 'Ajustes', content: refine });
+      if (gsapOn) blocks.push({ label: 'Especificación de movimiento', content: motionSpec(s, T, 'md') });
+      return { blocks, platform: P };
+    }
+
+    // Claude Design, Figma Make y v0: brief de diseño completo.
+    const role = section('rol', 'Rol', [], s, P.role);
+    const context = section('contexto', 'Contexto', [
+      `Proyecto: ${s.projectName || '(sin nombre: propón uno provisional)'}`,
+      `Tipo: ${T.name}`,
+      s.description && `Descripción: ${s.description}`,
+      `Objetivo de negocio: ${T.goals}`,
+      s.audience && `Público objetivo: ${s.audience}`,
+      s.cta && `Acción principal: «${s.cta}»`,
+      `Idioma: ${lang}`,
+    ], s);
+    const brief = section('encargo', 'Encargo', [
+      `Pantallas: ${screens.join(' · ')}.`,
+      variants > 1 && `Explora ${variants} direcciones visuales para la pantalla «${screens[0]}» antes de extender la elegida al resto.`,
+      states.length && `Estados a diseñar: ${states.join('; ')}.`,
+      ...T.features.map((f) => ['complete', `Contempla: ${f}.`]),
+      copy,
+    ], s, `Diseña ${D.fidelity[s.fidelity]} para ${device}: «${name}».`);
+    const look = section('direccion_visual', 'Dirección visual', [
+      ...visual,
+      ['complete', 'Composición con intención: jerarquía tipográfica marcada, espacio en blanco generoso y un punto focal claro por pantalla; evita el aspecto de plantilla genérica.'],
+    ], s);
+    const system = section('sistema_diseno', 'Sistema de diseño', [
+      `Base: ${D.dsBases[s.dsBase]}.`,
+      'Tokens: colores (primario, secundario, neutros, estados), escala tipográfica, espaciado en múltiplos de 8, radios, sombras y breakpoints.',
+      s.styleGuide && 'Incluye una hoja de componentes: botones, enlaces, campos de formulario, tarjetas, navegación, modales y etiquetas, con sus variantes.',
+      s.device === 'web-responsive' && 'Retícula de 12 columnas en escritorio y 4 en móvil; muestra cada pantalla en ambos tamaños.',
+      s.a11y && 'Accesibilidad WCAG 2.2 AA: contraste suficiente, foco visible, zonas táctiles ≥ 44 px, sin depender solo del color.',
+    ], s);
+    const content = seoOn ? section('contenido_seo', 'Contenido y jerarquía (SEO)', [
+      `Un único H1 por pantalla${s.keyword ? ` que incluya de forma natural «${s.keyword}»` : ''}, seguido de H2/H3 sin saltos de nivel.`,
+      s.keywords2 && `Integra en subtítulos y textos: ${s.keywords2}.`,
+      'El contenido importante debe ser texto real, no texto dentro de imágenes.',
+      ['complete', 'Indica para cada imagen un texto alternativo descriptivo.'],
+      s.location && `Muestra de forma visible la ubicación (${s.location}), el teléfono y el horario donde proceda.`,
+      ['complete', `Estructura pensada para SEO: ${T.seo}`],
+      ['exhaustive', 'Propón un título SEO (50–60 caracteres) y una meta descripción (140–160) para cada pantalla.'],
+    ], s) : null;
+    const motion = gsapOn ? { key: 'movimiento', title: 'Movimiento', intro: null, lines: motionLines(s, T) } : null;
+    const deliver = section('entrega', 'Entrega', [
+      s.askQuestions
+        ? 'Antes de empezar, hazme como máximo 5 preguntas clave y espera mis respuestas.'
+        : 'Si falta información, toma decisiones razonables y enuméralas como suposiciones.',
+      ...P.delivery,
+      s.handoff && 'Anota para desarrollo: tokens usados, medidas de espaciado, comportamiento responsive y especificaciones de animación.',
+    ], s);
+    const content2 = format([context, brief, look, system, content, motion, deliver], 'md');
+    return { blocks: [{ label: 'Prompt de diseño', content: role.intro + '\n\n' + content2 }], platform: P };
+  }
+
+  // Especificación de movimiento pensada para implementarse después con GSAP.
+  function motionLines(s, T) {
+    const plugins = s.gsapPlugins.map((id) => byId(D.gsapPlugins, id).label);
+    return pick([
+      `Intensidad: ${D.gsapLevels[s.gsapLevel]}`,
+      `Ideas: ${T.gsap}`,
+      s.gsapCustom && `Animaciones solicitadas: ${s.gsapCustom}`,
+      'Para cada animación indica: elemento, disparador (carga, scroll, hover, clic), estado inicial y final, duración, retardo y curva de easing.',
+      plugins.length && `Se implementará con GSAP (${plugins.join(', ')}): diseña solo movimientos de posición, escala, rotación y opacidad.`,
+      ['complete', 'Define una alternativa para «reducir movimiento» (fundidos cortos o sin animación).'],
+      ['complete', 'El titular principal y la imagen del hero deben verse de inmediato; anima los elementos secundarios.'],
+    ], s.detail);
+  }
+
+  function motionSpec(s, T) {
+    return ['Especificación de movimiento (para el equipo de desarrollo):', ...motionLines(s, T).map((l) => '- ' + l)].join('\n');
+  }
+
   function build(s) {
+    if (s.mode === 'design') return buildDesign(s);
     const x = buildSections(s);
     const { P } = x;
     const blocks = [];
@@ -453,6 +609,7 @@
 
   function update() {
     const s = readState();
+    syncMode(s.mode);
     save(s);
     renderOutput(build(s), s);
   }
@@ -490,6 +647,10 @@
         prevType = t.value;
       }
       if (t.name === 'gsapLevel') setDefaultPlugins(t.value);
+      if (t.name === 'mode') {
+        renderPlatforms(t.value);
+        activeTab = 0;
+      }
       if (t.name === 'platform') {
         activeTab = 0;
         Anim.pop(t.nextElementSibling);
@@ -534,6 +695,7 @@
       if (!confirm('¿Restablecer todos los campos?')) return;
       try { localStorage.removeItem(STORAGE_KEY); } catch (e) { /* sin almacenamiento */ }
       form.reset();
+      renderPlatforms('web');
       setDefaultPlugins('moderate');
       prevType = $('#projectType').value;
       $('#sections').value = byId(D.projectTypes, prevType).sections;
